@@ -34,7 +34,8 @@
     "nodeunit": "~>0.8.0"
   },
   "scripts": {
-    "test": "nodeunit test/integration.js test/outparams.js"
+    "test": "nodeunit test/integration.js test/outparams.js",
+    "install": "node install.js || node-gyp rebuild"
   },
   "main": "./index.js"
 }
