@@ -2,11 +2,21 @@ var os = require("os");
 var fs = require("fs");
 var path = require("path");
 
-var sourceDir = path.join(__dirname, "prebuild", os.platform(), os.arch());
+var nodeVersion;
+
+if (process.version.indexOf("v0.10") === 0) {
+    nodeVersion = "node0.10";
+} else if (process.version.indexOf("v0.8") === 0) {
+    nodeVersion = "node0.8";
+} else {
+    console.log("Binary distribution not included. Compiling...");
+    return process.exit(1); 
+}
+
+var sourceDir = path.join(__dirname, "prebuild", os.platform(), os.arch(), nodeVersion);
 var source = path.join(sourceDir, "oracle_bindings.node");
 
 var targetDir = path.join(__dirname, "build", "Release");
-var target = path.join(targetDir, "oracle_bindings.node");
 
 console.log("install.js settings:");
 console.log("\t", sourceDir);
@@ -16,10 +26,11 @@ if (!fs.existsSync(source)) {
 
 	console.log("oracle_bindings.node for platform " + os.platform() + " and arch " + os.arch() + " does not exist");
 	return process.exit(1); 
-};
+}
 
 
 var mkdir = function (p, root) {
+    "use strict";
     var dirs = p.split(path.sep), dir = dirs.shift(), root = (root||'')+dir+path.sep;
 
     try { fs.mkdirSync(root); }
@@ -32,7 +43,7 @@ var mkdir = function (p, root) {
 
 
 var cp = function(src, dest, cb) {
-
+    "use strict";
     var count = 0;
 
     var copyFile = function(src, dest, cb) {
@@ -79,6 +90,7 @@ var cp = function(src, dest, cb) {
 
 mkdir(targetDir);
 cp(sourceDir, targetDir, function (err){
+    "use strict";
     process.exit(err ? 1 : 0);
 });
 
